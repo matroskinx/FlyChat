@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">FlyChat</string>
+    <string name="email_hint_text">Email</string>
+    <string name="password_hint_text">Password</string>
+    <string name="username_hint_text">Username</string>
+    <string name="login_text">Login</string>
+    <string name="registration_invitation_text">No account yet? Create one</string>
+    <string name="login_invitation_text">Already have an account? Login</string>
+    <string name="register_text">Register</string>
 </resources>
