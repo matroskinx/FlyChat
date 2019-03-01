@@ -1,5 +1,6 @@
 package com.example.vladislav.flychat
 
+import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +14,12 @@ class LoginActivity : AppCompatActivity() {
 
         to_register_btn.setOnClickListener{
             startActivity(Intent(this, RegisterActivity::class.java))
+            it.isEnabled = false
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        to_register_btn.isEnabled = true
     }
 }
