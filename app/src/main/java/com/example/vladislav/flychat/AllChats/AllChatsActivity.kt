@@ -2,7 +2,10 @@ package com.example.vladislav.flychat.AllChats
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.vladislav.flychat.Conversation.MessagesViewModel
 import com.example.vladislav.flychat.Models.ChatMessage
 import com.example.vladislav.flychat.R
 import kotlinx.android.synthetic.main.activity_chats.*
@@ -20,11 +23,8 @@ class AllChatsActivity : AppCompatActivity() {
         linearLayoutManager = LinearLayoutManager(this)
         chats_rc.layoutManager = linearLayoutManager
 
-        val a = ChatMessage("1", "Hello", "Vlad", "Test", 5040)
-        val b = ChatMessage("2", "It's me", "Vlad", "Test", 5050)
-        val c = ChatMessage("3", "Darkness", "Vlad", "Test", 5060)
-
-        messageList.addAll(listOf(a, b, c))
+        val model = ViewModelProviders.of(this).get(MessagesViewModel::class.java)
+        messageList = model.getMessages()
 
         adapter = RecyclerAdapter(messageList)
         chats_rc.adapter = adapter
