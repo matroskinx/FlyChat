@@ -3,7 +3,7 @@ package com.example.vladislav.flychat
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.vladislav.flychat.Login.LoginActivity
+import com.example.vladislav.flychat.AllChats.AllChatsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         test_button.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this, AllChatsActivity::class.java))
         }
     }
 }
