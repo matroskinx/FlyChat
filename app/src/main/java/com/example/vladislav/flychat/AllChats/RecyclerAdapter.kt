@@ -10,6 +10,9 @@ import com.example.vladislav.flychat.Models.ChatMessage
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.inflate
 import kotlinx.android.synthetic.main.recyclerview_chat_row.view.*
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class RecyclerAdapter(private val messages: ArrayList<ChatMessage>) :
     RecyclerView.Adapter<RecyclerAdapter.MessageHolder>() {
@@ -47,6 +50,26 @@ class RecyclerAdapter(private val messages: ArrayList<ChatMessage>) :
             view.sender_message_text.text = message.body
             view.sender_name_text.text = message.fromUid
             view.sender_image.setImageResource(R.drawable.abc_ic_star_black_48dp)
+
+            val dateTimestamp = message.timestamp * 1000   // timestamp back to millis
+            val currentDate = System.currentTimeMillis()
+            val date = Date(dateTimestamp)
+            val dateDiff = currentDate - dateTimestamp
+
+            view.time_text.text = when {
+                dateDiff < 1000 * 60 * 60 * 24 -> {
+                    val sdf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+                    sdf.format(date)
+                }
+                dateDiff < 1000 * 60 * 60 * 24 * 7 -> {
+                    val sdf = SimpleDateFormat("E", Locale.getDefault())
+                    sdf.format(date)
+                }
+                else -> {
+                    val dateFormat = android.text.format.DateFormat.getDateFormat(itemView.context)
+                    dateFormat.format(date)
+                }
+            }
         }
 
         companion object {
