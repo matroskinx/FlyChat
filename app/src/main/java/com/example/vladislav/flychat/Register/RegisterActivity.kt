@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.example.vladislav.flychat.AllChats.AllChatsActivity
 import com.example.vladislav.flychat.Login.LoginActivity
 import com.example.vladislav.flychat.R
 import kotlinx.android.synthetic.main.activity_register.*
@@ -15,10 +16,11 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
 
     lateinit var presenter: RegisterContract.Presenter
 
-    override fun setRegisterError() {
+    override fun setRegisterError(exceptionMessage: String) {
         username_field.error = "This field is necessary"
         email_field.error = "This field is necessary"
         password_field.error = "This field is necessary"
+        Toast.makeText(this, exceptionMessage, Toast.LENGTH_LONG).show()
     }
 
     override fun navigateToLogin() {
@@ -26,7 +28,12 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     }
 
     override fun navigateToChat() {
-        Toast.makeText(this, "Registered successfully", Toast.LENGTH_LONG).show()
+        startActivity(
+            Intent(
+                this,
+                AllChatsActivity::class.java
+            ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
     }
 
     override fun setupPresenter(presenter: RegisterContract.Presenter) {
@@ -58,8 +65,12 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
             finish()
         }
 
-        perform_register.setOnClickListener{
-            presenter.register(username_field.toString(), email_field.toString(), password_field.toString())
+        perform_register.setOnClickListener {
+            presenter.register(
+                username_field.text.toString(),
+                email_field.text.toString(),
+                password_field.text.toString()
+            )
         }
 
         profile_image.setOnClickListener {

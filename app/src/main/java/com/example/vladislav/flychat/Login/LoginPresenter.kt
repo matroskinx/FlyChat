@@ -4,9 +4,13 @@ class LoginPresenter(private var view: LoginContract.View?, private val loginInt
     LoginContract.Presenter,
     LoginInteractor.OnLoginFinishListener {
 
-    override fun onLoginError() {
-        view?.setLoginError()
+    override fun onLoginError(exceptionMessage: String) {
+        view?.setLoginError(exceptionMessage)
         view?.hideLoading()
+    }
+
+    override fun isUserLoggedIn(): Boolean {
+        return loginInteractor.isUserLoggedIn()
     }
 
     override fun onSuccess() {

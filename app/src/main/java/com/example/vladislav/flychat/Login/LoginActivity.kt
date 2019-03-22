@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.example.vladislav.flychat.AllChats.AllChatsActivity
+import com.example.vladislav.flychat.MainActivity
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.Register.RegisterActivity
 import kotlinx.android.synthetic.main.activity_login.*
@@ -14,14 +16,14 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
     lateinit var presenter: LoginContract.Presenter
 
     override fun navigateToChat() {
-        Toast.makeText(this, "Logged in successfully", Toast.LENGTH_LONG).show()
-        //TODO("go to chat screen")
+        startActivity(Intent(this, AllChatsActivity::class.java))
+        finish()
     }
 
-    override fun setLoginError() {
+    override fun setLoginError(exceptionMessage: String) {
         email_field_login.error = "This field is necessary"
         password_field_login.error = "This field is necessary"
-        Toast.makeText(this, "Login unsuccessfull", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, exceptionMessage, Toast.LENGTH_LONG).show()
     }
 
     override fun navigateToRegister() {
@@ -59,6 +61,14 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
         perform_login.setOnClickListener {
             presenter.login(email_field_login.text.toString(), password_field_login.text.toString())
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (presenter.isUserLoggedIn()) {
+            startActivity(Intent(this, AllChatsActivity::class.java))
+            finish()
         }
     }
 

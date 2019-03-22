@@ -5,14 +5,15 @@ import com.example.vladislav.flychat.BaseView
 import com.example.vladislav.flychat.LoadingView
 
 interface LoginContract {
-    interface Presenter: BasePresenter {
+    interface Presenter : BasePresenter {
         fun onViewCreated()
         fun login(email: String, password: String)
+        fun isUserLoggedIn(): Boolean
     }
 
-    interface View: BaseView<Presenter>,
+    interface View : BaseView<Presenter>,
         LoadingView {
-        fun setLoginError()
+        fun setLoginError(exceptionMessage: String)
         fun navigateToRegister()
         fun navigateToChat()
     }

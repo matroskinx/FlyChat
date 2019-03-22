@@ -12,7 +12,7 @@ interface RegisterContract {
 
     interface View : BaseView<Presenter>,
         LoadingView {
-        fun setRegisterError()
+        fun setRegisterError(exceptionMessage: String)
         fun navigateToLogin()
         fun navigateToChat()
     }

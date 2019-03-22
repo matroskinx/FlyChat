@@ -2,8 +2,8 @@ package com.example.vladislav.flychat.Register
 
 class RegisterPresenter(private var view: RegisterContract.View?, private val registerInteractor: RegisterInteractor) :
     RegisterContract.Presenter, RegisterInteractor.OnRegisterFinishListener {
-    override fun onRegisterError() {
-        view?.setRegisterError()
+    override fun onRegisterError(exceptionMessage: String) {
+        view?.setRegisterError(exceptionMessage)
         view?.hideLoading()
     }
 
