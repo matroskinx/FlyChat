@@ -1,5 +1,7 @@
 package com.example.vladislav.flychat.Register
 
+import android.net.Uri
+
 class RegisterPresenter(private var view: RegisterContract.View?, private val registerInteractor: RegisterInteractor) :
     RegisterContract.Presenter, RegisterInteractor.OnRegisterFinishListener {
     override fun onRegisterError(exceptionMessage: String) {
@@ -15,9 +17,9 @@ class RegisterPresenter(private var view: RegisterContract.View?, private val re
 
     }
 
-    override fun register(username: String, email: String, password: String) {
+    override fun register(username: String, email: String, password: String, photoFileUri: Uri?) {
         view?.showLoading()
-        registerInteractor.register(username, email, password, this)
+        registerInteractor.register(username, email, password, photoFileUri, this)
     }
 
     override fun onDestroy() {

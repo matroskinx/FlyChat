@@ -1,5 +1,6 @@
 package com.example.vladislav.flychat.Register
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -24,7 +25,7 @@ import java.util.*
 class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     lateinit var presenter: RegisterContract.Presenter
     private lateinit var photoPath: String
-    private lateinit var photoFileUri: Uri
+    private var photoFileUri: Uri? = null
     private val storageRef = FirebaseStorage.getInstance().reference
 
     override fun setRegisterError(exceptionMessage: String) {
@@ -85,6 +86,14 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
 
             uploadPicToFirebase()
         }
+        if (requestCode == PICK_PICTURE_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            photoFileUri = data.data
+            Picasso.get()
+                .load(photoFileUri)
+                .fit()
+                .into(profile_image_register)
+            uploadPicToFirebase()
+        }
     }
 
     private fun createImageFile(): File {
@@ -101,15 +110,19 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
         val filename = UUID.randomUUID().toString()
         val fileRef = storageRef.child("avatars/$filename")
 
-        val uploadTask = fileRef.putFile(photoFileUri)
+        photoFileUri?.let {
+            val uploadTask = fileRef.putFile(it)
 
-        uploadTask.addOnSuccessListener {
-            fileRef.downloadUrl.addOnSuccessListener {
-                Log.d(TAG, "upload link: $it")
+            uploadTask.addOnSuccessListener {
+                Log.d(TAG, "picture successfully uploaded")
+                fileRef.downloadUrl.addOnSuccessListener { uri ->
+                    Log.d(TAG, "upload link: $uri")
+                }
             }
-            Log.d(TAG, "picture successfully uploaded")
-        }.addOnFailureListener {
-            Log.d(TAG, "picture not loaded, reason: ${it.localizedMessage}")
+            uploadTask.addOnFailureListener { exception ->
+                Log.d(TAG, "picture not loaded, reason: ${exception.localizedMessage}")
+            }
+            return
         }
     }
 
@@ -134,7 +147,8 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
             presenter.register(
                 username_field.text.toString(),
                 email_field.text.toString(),
-                password_field.text.toString()
+                password_field.text.toString(),
+                photoFileUri
             )
         }
 
