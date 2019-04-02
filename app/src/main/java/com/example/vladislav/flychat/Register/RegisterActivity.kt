@@ -15,6 +15,7 @@ import androidx.core.content.FileProvider
 import com.example.vladislav.flychat.AllChats.AllChatsActivity
 import com.example.vladislav.flychat.R
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_register.*
 import java.io.File
 import java.text.SimpleDateFormat
@@ -76,7 +77,12 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TAKE_PICTURE_CODE && resultCode == RESULT_OK) {
             val imageBmp = BitmapFactory.decodeFile(photoPath)
-            MediaStore.Images.Media.insertImage(contentResolver, imageBmp, "test_tile", "test_desc")
+            //MediaStore.Images.Media.insertImage(contentResolver, imageBmp, "test_tile", "test_desc")
+            Picasso.get()
+                .load(photoFileUri)
+                .fit()
+                .into(profile_image_register)
+
             uploadPicToFirebase()
         }
     }
@@ -84,7 +90,8 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     private fun createImageFile(): File {
         //TODO add write_external_storage permission request
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
         val tempFile: File = File.createTempFile("pic_$timeStamp", ".jpg", storageDir)
         photoPath = tempFile.absolutePath
         return tempFile
@@ -131,7 +138,7 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
             )
         }
 
-        profile_image.setOnClickListener {
+        profile_image_register.setOnClickListener {
             val builder = AlertDialog.Builder(this)
 
             builder.setTitle("Choose from?")
