@@ -5,13 +5,14 @@ import android.util.Log
 import com.example.vladislav.flychat.Models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import java.util.*
 
 class RegisterInteractor {
 
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
-
-    private val TAG = "RegisterInteractor"
+    private val storage = FirebaseStorage.getInstance().reference
 
     interface OnRegisterFinishListener {
         fun onRegisterError(exceptionMessage: String)
@@ -68,5 +69,27 @@ class RegisterInteractor {
                 }
             return
         }
+    }
+
+
+/*    private fun uploadPicToFirebase(photoFileUri: Uri) {
+        val filename = UUID.randomUUID().toString()
+        val fileRef = storage.child("avatars/$filename")
+
+        val uploadTask = fileRef.putFile(photoFileUri)
+
+        uploadTask.addOnSuccessListener {
+            Log.d(TAG, "picture successfully uploaded")
+            fileRef.downloadUrl.addOnSuccessListener { uri ->
+                Log.d(TAG, "upload link: $uri")
+            }
+        }
+        uploadTask.addOnFailureListener { exception ->
+            Log.d(TAG, "picture not loaded, reason: ${exception.localizedMessage}")
+        }
+    }*/
+
+    companion object {
+        const val TAG = "RegisterInteractor"
     }
 }

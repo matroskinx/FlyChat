@@ -2,7 +2,6 @@ package com.example.vladislav.flychat.Register
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -77,13 +76,12 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TAKE_PICTURE_CODE && resultCode == RESULT_OK) {
-            val imageBmp = BitmapFactory.decodeFile(photoPath)
+            //val imageBmp = BitmapFactory.decodeFile(photoPath)
             //MediaStore.Images.Media.insertImage(contentResolver, imageBmp, "test_tile", "test_desc")
             Picasso.get()
                 .load(photoFileUri)
                 .fit()
                 .into(profile_image_register)
-
             uploadPicToFirebase()
         }
         if (requestCode == PICK_PICTURE_CODE && resultCode == Activity.RESULT_OK && data != null) {
