@@ -40,15 +40,17 @@ class RecyclerAdapter(private val messages: ArrayList<ChatMessage>) :
         override fun onClick(v: View?) {
             val context = itemView.context
             val openConversationIntent = Intent(context, ConversationActivity::class.java)
-            openConversationIntent.putExtra(USER_KEY, message?.fromUid)
+            //TODO not message?.id but user id
+            openConversationIntent.putExtra(USER_KEY, message?.id)
             context.startActivity(openConversationIntent)
             Log.d("MESSAGESRV", "Click!")
         }
 
         fun bindMessage(message: ChatMessage) {
             this.message = message
-            view.sender_message_text.text = message.body
-            view.sender_name_text.text = message.fromUid
+            //TODO fix display messages
+            view.sender_message_text.text = message.text
+            view.sender_name_text.text = message.userName
             view.sender_image.setImageResource(R.drawable.abc_ic_star_black_48dp)
 
             val dateTimestamp = message.timestamp * 1000   // timestamp back to millis

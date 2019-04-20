@@ -2,6 +2,8 @@ package com.example.vladislav.flychat.Register
 
 import android.net.Uri
 import android.util.Log
+import com.example.vladislav.flychat.Models.Chat
+import com.example.vladislav.flychat.Models.LastMessage
 import com.example.vladislav.flychat.Models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -55,8 +57,10 @@ class RegisterInteractor {
     ) {
         val uid = auth.uid
         val reference = db.getReference("users/$uid")
+        //val chatsref = db.getReference("chats/smth")
         uid?.let {
-            val user = User(uid, email, username, photoFileUri.toString())
+            val user = User(uid, email = email, username = username, profileImageURL = photoFileUri.toString())
+            user.chats.add("smth")
             reference.setValue(user)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -66,6 +70,11 @@ class RegisterInteractor {
                         listener.onRegisterError(task.exception?.localizedMessage ?: "")
                         Log.d(TAG, "Failed to save user $uid because of: ${task.exception?.localizedMessage}")
                     }
+                }.continueWith {
+                    /*
+                    val chat = Chat("smth", LastMessage("123", 34214, "Vladislav"), mutableListOf(), mutableListOf())
+                    chatsref.setValue(chat)
+                    */
                 }
             return
         }

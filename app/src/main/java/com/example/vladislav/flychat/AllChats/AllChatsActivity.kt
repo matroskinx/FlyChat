@@ -31,7 +31,12 @@ class AllChatsActivity : AppCompatActivity() {
         adapter = RecyclerAdapter(messageList)
         chats_rc.adapter = adapter
         chats_rc.setHasFixedSize(true)
-        button_test.setOnClickListener {
+
+        button_test.setOnClickListener{
+            AllChatsRemoteRepository().loadChatsList()
+        }
+
+/*        button_test.setOnClickListener {
             counter += 1
             val testMessage = ChatMessage(
                 counter.toString(),
@@ -46,7 +51,7 @@ class AllChatsActivity : AppCompatActivity() {
             val insertedItemIndex = messageList.indexOf(testMessage)
             adapter.notifyItemInserted(insertedItemIndex)
 
-        }
+        }*/
 
     }
 }
