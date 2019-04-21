@@ -41,7 +41,7 @@ class RecyclerAdapter(private val messages: ArrayList<ChatMessage>) :
             val context = itemView.context
             val openConversationIntent = Intent(context, ConversationActivity::class.java)
             //TODO not message?.id but user id
-            openConversationIntent.putExtra(USER_KEY, message?.id)
+            openConversationIntent.putExtra(USER_KEY, message?.text)
             context.startActivity(openConversationIntent)
             Log.d("MESSAGESRV", "Click!")
         }

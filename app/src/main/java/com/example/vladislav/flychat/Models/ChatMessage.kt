@@ -1,8 +1,7 @@
 package com.example.vladislav.flychat.Models
 
 data class ChatMessage(
-    val id: String,
-    val text: String,
-    val userName: String,
-    val timestamp: Long
+    val text: String = "",
+    val timestamp: Long = 0,
+    val userName: String = ""
 )

@@ -4,5 +4,5 @@ data class Chat(
     val id: String,
     val lastMessage: LastMessage,
     val messages: MutableList<ChatMessage>,
-    val users: MutableList<User>
+    val users: MutableList<String>
 )
