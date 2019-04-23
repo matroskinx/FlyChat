@@ -60,7 +60,6 @@ class RegisterInteractor {
         //val chatsref = db.getReference("chats/smth")
         uid?.let {
             val user = User(uid, email = email, username = username, profileImageURL = photoFileUri.toString())
-            user.chats.add("smth")
             reference.setValue(user)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {

@@ -7,15 +7,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vladislav.flychat.Conversation.ConversationActivity
 import com.example.vladislav.flychat.Models.ChatMessage
+import com.example.vladislav.flychat.Models.LastMessage
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.inflate
 import kotlinx.android.synthetic.main.recyclerview_chat_row.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class RecyclerAdapter(private val messages: ArrayList<ChatMessage>) :
-    RecyclerView.Adapter<RecyclerAdapter.MessageHolder>() {
+class LatestMessagesRecyclerAdapter(private val messages: MutableList<LastMessage>) :
+    RecyclerView.Adapter<LatestMessagesRecyclerAdapter.MessageHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
         val inflatedView = parent.inflate(R.layout.recyclerview_chat_row, false)
@@ -31,7 +33,7 @@ class RecyclerAdapter(private val messages: ArrayList<ChatMessage>) :
 
     class MessageHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         private var view: View = v
-        private var message: ChatMessage? = null
+        private var message: LastMessage? = null
 
         init {
             v.setOnClickListener(this)
@@ -46,14 +48,14 @@ class RecyclerAdapter(private val messages: ArrayList<ChatMessage>) :
             Log.d("MESSAGESRV", "Click!")
         }
 
-        fun bindMessage(message: ChatMessage) {
+        fun bindMessage(message: LastMessage) {
             this.message = message
             //TODO fix display messages
             view.sender_message_text.text = message.text
-            view.sender_name_text.text = message.userName
+            view.sender_name_text.text = message.text
             view.sender_image.setImageResource(R.drawable.abc_ic_star_black_48dp)
 
-            val dateTimestamp = message.timestamp * 1000   // timestamp back to millis
+            val dateTimestamp = message.time * 1000   // timestamp back to millis
             val currentDate = System.currentTimeMillis()
             val date = Date(dateTimestamp)
             val dateDiff = currentDate - dateTimestamp

@@ -6,11 +6,4 @@ import com.example.vladislav.flychat.Models.LastMessage
 
 class AllChatsViewModel : ViewModel() {
 
-
-
-
-
-
-
-
 }

@@ -11,12 +11,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.*
+import kotlin.collections.HashMap
 
 class AllChatsRemoteRepository {
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    private val latestMessages = mutableMapOf<String, LastMessage>()
+    val latestMessages = mutableMapOf<String, LastMessage>()
     private val chatMembers = mutableMapOf<String, ArrayList<String>>()        // key = chatId, value = listOf(user_id)
     private val userList = mutableMapOf<String, User>()
     private lateinit var currentUser: User
@@ -31,17 +32,8 @@ class AllChatsRemoteRepository {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-
                 val rawData = p0.value as HashMap<String, String>
-
-                val rawUid = rawData["uid"] as String
-                val rawImage = rawData["profileImageURL"] as String
-                val rawEmail = rawData["email"] as String
-                val rawUsername = rawData["username"] as String
-                val rawChats: HashMap<String, String> = rawData["chats"] as HashMap<String, String>
-                val rawChatIds = rawChats.keys.toMutableList()
-
-                val usr = User(rawUid, rawChatIds, rawEmail, rawUsername, rawImage)
+                val usr = convertRawDataToUser(rawData)
                 currentUser = usr
                 getLatestMessages(usr.chats)
                 getChatMembers(usr.chats)
@@ -49,6 +41,21 @@ class AllChatsRemoteRepository {
         }
 
         db.getReference("users/$uid").addListenerForSingleValueEvent(listener)
+    }
+
+    private fun convertRawDataToUser(rawData: HashMap<String, String>): User {
+        val rawUid = rawData["uid"] as String
+        val rawImage = rawData["profileImageURL"] as String
+        val rawEmail = rawData["email"] as String
+        val rawUsername = rawData["username"] as String
+        val rawChats: String? = rawData["chats"]
+        if (rawChats == null) {
+            return User(rawUid, mutableListOf(), rawEmail, rawUsername, rawImage)
+        } else {
+            val convertedRaw = rawChats as HashMap<String, String>
+            val chatIds = convertedRaw.keys.toMutableList()
+            return User(rawUid, chatIds, rawEmail, rawUsername, rawImage)
+        }
     }
 
 
@@ -59,7 +66,11 @@ class AllChatsRemoteRepository {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
-                    latestMessages[chatId] = p0.getValue(LastMessage::class.java) as LastMessage
+                    //TODO null check if chat is empty
+                    val value = p0.getValue(LastMessage::class.java)
+                    value?.let {
+                        latestMessages[chatId] = p0.getValue(LastMessage::class.java) as LastMessage
+                    }
                 }
             })
         }
@@ -75,15 +86,21 @@ class AllChatsRemoteRepository {
 
             override fun onDataChange(p0: DataSnapshot) {
                 for (item in p0.children) {
+                    val usr = convertRawDataToUser(item.value as HashMap<String, String>)
                     //TODO replace getValue as in loadChatsList
-                    val usr = item.getValue(User::class.java)
-                    usr?.let {
-                        userList[usr.uid] = usr
-                    }
-                    Log.d(TAG, "received ${usr?.email}")
+                    //val usr = item.getValue(User::class.java)
+                    userList[usr.uid] = usr
+                    Log.d(TAG, "received ${usr.email}")
                 }
             }
         })
+    }
+
+    fun sendMessage(text: String, toChatId: String) {
+        val chat = ChatMessage(text, System.currentTimeMillis(), "TEMP_UNAME")
+        val lastMessage = LastMessage(text, chat.timestamp)
+        db.getReference("chats/$toChatId/messages").push().setValue(chat)
+        db.getReference("chats/$toChatId/lastMessage").setValue(lastMessage)
     }
 
     private fun getChatMembers(chatIds: MutableList<String>) {
@@ -141,7 +158,7 @@ class AllChatsRemoteRepository {
         addChatToUser(destinationUid, chat.id)
     }
 
-    fun addChatToUser(destinationUid: String, chatId: String) {
+    private fun addChatToUser(destinationUid: String, chatId: String) {
         val value = hashMapOf("chatId" to chatId)
         db.getReference("users/$destinationUid/chats/$chatId").setValue(value)
         db.getReference("users/$uid/chats/$chatId").setValue(value)
