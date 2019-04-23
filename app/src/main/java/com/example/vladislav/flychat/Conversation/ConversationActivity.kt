@@ -11,11 +11,11 @@ class ConversationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_conversation)
 
-        val messageFromId = intent.getStringExtra(USER_KEY)
+        val messageFromId = intent.getStringExtra(UID_KEY)
         fromId_text.text = "recieved message from: $messageFromId"
     }
 
     companion object {
-        private const val USER_KEY = "USER"
+        private const val UID_KEY = "KEY92"
     }
 }
