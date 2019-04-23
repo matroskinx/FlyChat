@@ -19,7 +19,7 @@ class AllChatsRemoteRepository {
 
     val latestMessages = mutableMapOf<String, LastMessage>()
     private val chatMembers = mutableMapOf<String, ArrayList<String>>()        // key = chatId, value = listOf(user_id)
-    private val userList = mutableMapOf<String, User>()
+    val userList = mutableMapOf<String, User>()
     private lateinit var currentUser: User
 
     private val uid: String = auth.uid!!
@@ -48,12 +48,11 @@ class AllChatsRemoteRepository {
         val rawImage = rawData["profileImageURL"] as String
         val rawEmail = rawData["email"] as String
         val rawUsername = rawData["username"] as String
-        val rawChats: String? = rawData["chats"]
+        val rawChats: HashMap<String, String>? = rawData["chats"] as HashMap<String, String>?
         if (rawChats == null) {
             return User(rawUid, mutableListOf(), rawEmail, rawUsername, rawImage)
         } else {
-            val convertedRaw = rawChats as HashMap<String, String>
-            val chatIds = convertedRaw.keys.toMutableList()
+            val chatIds = rawChats.keys.toMutableList()
             return User(rawUid, chatIds, rawEmail, rawUsername, rawImage)
         }
     }
@@ -87,8 +86,6 @@ class AllChatsRemoteRepository {
             override fun onDataChange(p0: DataSnapshot) {
                 for (item in p0.children) {
                     val usr = convertRawDataToUser(item.value as HashMap<String, String>)
-                    //TODO replace getValue as in loadChatsList
-                    //val usr = item.getValue(User::class.java)
                     userList[usr.uid] = usr
                     Log.d(TAG, "received ${usr.email}")
                 }
@@ -154,7 +151,7 @@ class AllChatsRemoteRepository {
     private fun createNewChat(destinationUid: String) {
         val id = UUID.randomUUID().toString()
         val chat = Chat(id, LastMessage(), mutableListOf(), mutableListOf(uid, destinationUid))
-        db.getReference("chats").child(chat.id).setValue(chat)
+        db.getReference("chats/${chat.id}").setValue(chat)
         addChatToUser(destinationUid, chat.id)
     }
 
