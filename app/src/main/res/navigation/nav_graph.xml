@@ -9,7 +9,16 @@
               android:label="All chats"
               tools:layout="@layout/fragment_all_chats">
         <action android:id="@+id/action_allChatsFragment_to_newChatFragment" app:destination="@id/newChatFragment"/>
+        <action android:id="@+id/action_allChatsFragment_to_conversationFragment"
+                app:destination="@id/conversationFragment"/>
     </fragment>
     <fragment android:id="@+id/newChatFragment" android:name="com.example.vladislav.flychat.AllChats.NewChatFragment"
-              android:label="fragment_new_chat" tools:layout="@layout/fragment_new_chat"/>
+              android:label="Start new chat" tools:layout="@layout/fragment_new_chat">
+        <action android:id="@+id/action_newChatFragment_to_conversationFragment"
+                app:destination="@id/conversationFragment" app:popUpTo="@+id/allChatsFragment"/>
+    </fragment>
+    <fragment android:id="@+id/conversationFragment" android:name="com.example.vladislav.flychat.Conversation.ConversationFragment"
+              android:label="Conversation" tools:layout="@layout/fragment_conversation">
+        <argument android:name="chatId" app:argType="string"/>
+    </fragment>
 </navigation>

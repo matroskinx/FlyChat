@@ -4,16 +4,14 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vladislav.flychat.Conversation.ConversationActivity
-import com.example.vladislav.flychat.Models.ChatMessage
 import com.example.vladislav.flychat.Models.LastMessage
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.inflate
 import kotlinx.android.synthetic.main.recyclerview_chat_row.view.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class LatestMessagesRecyclerAdapter(private val messages: MutableList<LastMessage>) :
@@ -39,12 +37,8 @@ class LatestMessagesRecyclerAdapter(private val messages: MutableList<LastMessag
             v.setOnClickListener(this)
         }
 
-        override fun onClick(v: View?) {
-            val context = itemView.context
-            val openConversationIntent = Intent(context, ConversationActivity::class.java)
-            //TODO not message?.id but user id
-            openConversationIntent.putExtra(USER_KEY, message?.text)
-            context.startActivity(openConversationIntent)
+        override fun onClick(v: View) {
+            findNavController(v).navigate(AllChatsFragmentDirections.actionAllChatsFragmentToConversationFragment("To replace with chat id"))
             Log.d("MESSAGESRV", "Click!")
         }
 

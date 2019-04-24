@@ -4,8 +4,8 @@ import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vladislav.flychat.Conversation.ConversationActivity
 import com.example.vladislav.flychat.Models.User
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.inflate
@@ -31,12 +31,9 @@ class UserListRecyclerAdapter(private val users: MutableList<User>) :
         init {
             v.setOnClickListener(this)
         }
+
         override fun onClick(v: View?) {
-            //val position = layoutPosition
-            val context = itemView.context
-            val openConversationIntent = Intent(context, ConversationActivity::class.java)
-            openConversationIntent.putExtra(UID_KEY, user!!.uid)
-            context.startActivity(openConversationIntent)
+            findNavController(view).navigate(NewChatFragmentDirections.actionNewChatFragmentToConversationFragment(user!!.uid))
             Log.d("USERLISTRV", "User ${user!!.uid} opened")
         }
 
