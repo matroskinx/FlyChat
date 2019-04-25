@@ -6,6 +6,12 @@
              tools:context=".Conversation.ConversationFragment">
 
     <Button
+            android:text="Send Test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/sms"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="8dp" android:layout_marginTop="8dp"/>
+    <Button
             android:text="Load messages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/load_messages_btn" android:layout_marginTop="8dp"

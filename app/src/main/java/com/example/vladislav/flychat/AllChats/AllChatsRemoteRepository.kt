@@ -1,6 +1,8 @@
 package com.example.vladislav.flychat.AllChats
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.vladislav.flychat.Models.Chat
 import com.example.vladislav.flychat.Models.ChatMessage
 import com.example.vladislav.flychat.Models.LastMessage
@@ -14,13 +16,14 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class AllChatsRemoteRepository {
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    val latestMessages = mutableMapOf<String, LastMessage>()
+    val latestMessages = MutableLiveData<MutableMap<String, LastMessage>>()
+    val userList = MutableLiveData<MutableMap<String, User>>()
+
     private val chatMembers = mutableMapOf<String, ArrayList<String>>()        // key = chatId, value = listOf(user_id)
-    val userList = mutableMapOf<String, User>()
-    val messageList = mutableListOf<ChatMessage>()
+    val messageList = MutableLiveData<MutableList<ChatMessage>>()
     private lateinit var currentUser: User
 
     private val uid: String = auth.uid!!
@@ -60,16 +63,22 @@ class AllChatsRemoteRepository {
 
 
     private fun getLatestMessages(chatIds: MutableList<String>) {
+        var counter = 0
+        val amount = chatIds.size
+        val receivedLatestMessages = mutableMapOf<String, LastMessage>()
         chatIds.forEach { chatId ->
             db.getReference("chats/$chatId/lastMessage").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
-                    //TODO null check if chat is empty
                     val value = p0.getValue(LastMessage::class.java)
                     value?.let {
-                        latestMessages[chatId] = p0.getValue(LastMessage::class.java) as LastMessage
+                        receivedLatestMessages[chatId] = p0.getValue(LastMessage::class.java) as LastMessage
+                        counter++
+                        if (counter == amount) {
+                            latestMessages.postValue(receivedLatestMessages)
+                        }
                     }
                 }
             })
@@ -80,6 +89,7 @@ class AllChatsRemoteRepository {
         /*
             get all users to start chat with someone
          */
+        val receivedUserList = mutableMapOf<String, User>()
         db.getReference("users").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
@@ -87,9 +97,10 @@ class AllChatsRemoteRepository {
             override fun onDataChange(p0: DataSnapshot) {
                 for (item in p0.children) {
                     val usr = convertRawDataToUser(item.value as HashMap<String, String>)
-                    userList[usr.uid] = usr
+                    receivedUserList[usr.uid] = usr
                     Log.d(TAG, "received ${usr.email}")
                 }
+                userList.postValue(receivedUserList)
             }
         })
     }
@@ -122,14 +133,16 @@ class AllChatsRemoteRepository {
     }
 
     private fun loadChatMessages(chatId: String) {
-        db.getReference("chats/$chatId/messages").addListenerForSingleValueEvent(object : ValueEventListener {
+        db.getReference("chats/$chatId/messages").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
+                val receivedMessageList = mutableListOf<ChatMessage>()
                 for (message in p0.children) {
-                    messageList.add(message.getValue(ChatMessage::class.java) as ChatMessage)
+                    receivedMessageList.add(message.getValue(ChatMessage::class.java) as ChatMessage)
                 }
+                messageList.postValue(receivedMessageList)
             }
         })
     }
