@@ -23,6 +23,11 @@ class ConversationFragment : Fragment() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private val repo = AllChatsRemoteRepository()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        repo.openChat(args.chatId)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Toast.makeText(activity, args.chatId, Toast.LENGTH_LONG).show()
         return inflater.inflate(R.layout.fragment_conversation, container, false)
@@ -37,16 +42,14 @@ class ConversationFragment : Fragment() {
             adapterMessages = ConversationRecyclerAdapter(it)
             rv_messages.adapter = adapterMessages
             Toast.makeText(activity, "Observer triggered", Toast.LENGTH_LONG).show()
+            rv_messages.scrollToPosition(it.size -1)
         }
 
         repo.messageList.observe(this, messageListObserver)
-
-        load_messages_btn.setOnClickListener {
-            repo.openChat("c7f78c50-dfa3-4e6d-a154-6ebfb398359a")
-        }
-
+        
         sms.setOnClickListener {
-            repo.sendMessage("It's updated!", "c7f78c50-dfa3-4e6d-a154-6ebfb398359a")
+            val text = input_text.text.toString()
+            repo.sendMessage(text, args.chatId)
         }
     }
 }

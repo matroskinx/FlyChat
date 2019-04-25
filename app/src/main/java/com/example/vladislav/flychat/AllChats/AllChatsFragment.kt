@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,9 +18,16 @@ import kotlinx.android.synthetic.main.fragment_all_chats.*
 class AllChatsFragment : Fragment() {
 
     private val repo = AllChatsRemoteRepository()
+    private lateinit var viewModel: AllChatsViewModel
     private lateinit var adapterLatestMessages: LatestMessagesRecyclerAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(AllChatsViewModel::class.java)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -33,16 +41,11 @@ class AllChatsFragment : Fragment() {
         chrv.setHasFixedSize(true)
 
         val latestMessagesObserver = Observer<MutableMap<String, LastMessage>> {
-            adapterLatestMessages = LatestMessagesRecyclerAdapter(it.values.toMutableList())
+            adapterLatestMessages = LatestMessagesRecyclerAdapter(it)
             chrv.adapter = adapterLatestMessages
         }
 
-        repo.latestMessages.observe(this, latestMessagesObserver)
-
-        button_show.setOnClickListener {
-            repo.loadChatsList()
-        }
-
+        viewModel.latestMessages.observe(this, latestMessagesObserver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

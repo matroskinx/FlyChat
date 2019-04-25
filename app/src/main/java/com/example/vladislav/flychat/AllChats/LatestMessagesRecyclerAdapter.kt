@@ -14,22 +14,23 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class LatestMessagesRecyclerAdapter(private val messages: MutableList<LastMessage>) :
+class LatestMessagesRecyclerAdapter(private val messages: MutableMap<String, LastMessage>) :
     RecyclerView.Adapter<LatestMessagesRecyclerAdapter.MessageHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
         val inflatedView = parent.inflate(R.layout.recyclerview_chat_row, false)
-        return MessageHolder(inflatedView)
+        return MessageHolder(inflatedView, messages)
     }
 
     override fun getItemCount() = messages.size
 
     override fun onBindViewHolder(holder: MessageHolder, position: Int) {
-        val itemMessage = messages[position]
+        val itemMessage = messages.values.elementAt(position)
         holder.bindMessage(itemMessage)
     }
 
-    class MessageHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    class MessageHolder(v: View, private val messages: MutableMap<String, LastMessage>) : RecyclerView.ViewHolder(v),
+        View.OnClickListener {
         private var view: View = v
         private var message: LastMessage? = null
 
@@ -38,7 +39,8 @@ class LatestMessagesRecyclerAdapter(private val messages: MutableList<LastMessag
         }
 
         override fun onClick(v: View) {
-            findNavController(v).navigate(AllChatsFragmentDirections.actionAllChatsFragmentToConversationFragment("To replace with chat id"))
+            val chatId = messages.keys.elementAt(adapterPosition)
+            findNavController(v).navigate(AllChatsFragmentDirections.actionAllChatsFragmentToConversationFragment(chatId))
             Log.d("MESSAGESRV", "Click!")
         }
 
