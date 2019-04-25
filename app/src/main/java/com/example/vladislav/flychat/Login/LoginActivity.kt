@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.example.vladislav.flychat.AllChats.AllChatsActivity
-import com.example.vladislav.flychat.MainActivity
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.Register.RegisterActivity
 import kotlinx.android.synthetic.main.activity_login.*
