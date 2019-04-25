@@ -20,6 +20,7 @@ class AllChatsRemoteRepository {
     val latestMessages = mutableMapOf<String, LastMessage>()
     private val chatMembers = mutableMapOf<String, ArrayList<String>>()        // key = chatId, value = listOf(user_id)
     val userList = mutableMapOf<String, User>()
+    val messageList = mutableListOf<ChatMessage>()
     private lateinit var currentUser: User
 
     private val uid: String = auth.uid!!
@@ -126,7 +127,6 @@ class AllChatsRemoteRepository {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                val messageList = mutableListOf<ChatMessage>()
                 for (message in p0.children) {
                     messageList.add(message.getValue(ChatMessage::class.java) as ChatMessage)
                 }
