@@ -26,7 +26,7 @@ class AllChatsRemoteRepository {
     val messageList = MutableLiveData<MutableList<ChatMessage>>()
     private lateinit var currentUser: User
 
-    private val uid: String = auth.uid!!
+    val uid: String = auth.uid!!
 
     // CALLED FIRST
     fun loadChatsList() {
@@ -106,7 +106,7 @@ class AllChatsRemoteRepository {
     }
 
     fun sendMessage(text: String, toChatId: String) {
-        val chat = ChatMessage(text, System.currentTimeMillis(), "TEMP_UNAME")
+        val chat = ChatMessage(text, System.currentTimeMillis(), uid)
         val lastMessage = LastMessage(text, chat.timestamp)
         db.getReference("chats/$toChatId/messages").push().setValue(chat)
         db.getReference("chats/$toChatId/lastMessage").setValue(lastMessage)

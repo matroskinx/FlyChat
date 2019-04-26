@@ -10,17 +10,17 @@ import kotlinx.android.synthetic.main.recyclerview_chat_left.view.*
 import kotlinx.android.synthetic.main.recyclerview_chat_right.view.*
 import java.lang.IllegalStateException
 
-class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessage>) :
+class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessage>, private val currentUid: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         when(viewType) {
-            0 -> {
+            LEFT_CHAT -> {
                 val inflatedView = parent.inflate(R.layout.recyclerview_chat_right, false)
                 return RightMessageHolder(inflatedView)
             }
-            2 -> {
+            RIGHT_CHAT -> {
                 val inflatedView = parent.inflate(R.layout.recyclerview_chat_left, false)
                 return LeftMessageHolder(inflatedView)
             }
@@ -29,18 +29,21 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
     }
 
     override fun getItemViewType(position: Int): Int {
-        return position % 2 * 2
+        return when(messageList[position].userName) {
+            currentUid -> LEFT_CHAT
+            else -> RIGHT_CHAT
+        }
     }
 
     override fun getItemCount() = messageList.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder.itemViewType) {
-            0 -> {
+            LEFT_CHAT -> {
                 val item = messageList[position]
                 (holder as RightMessageHolder).bindMessage(item)
             }
-            2 -> {
+            RIGHT_CHAT -> {
                 val item = messageList[position]
                 (holder as LeftMessageHolder).bindMessage(item)
             }
@@ -68,5 +71,10 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
             view.mes_left.text = chatMessage.text
             view.mes_left_username.text = chatMessage.userName
         }
+    }
+
+    companion object {
+        const val LEFT_CHAT = 0
+        const val RIGHT_CHAT = 1
     }
 }

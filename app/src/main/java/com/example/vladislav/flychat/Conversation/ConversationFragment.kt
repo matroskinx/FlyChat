@@ -39,14 +39,14 @@ class ConversationFragment : Fragment() {
         rv_messages.layoutManager = linearLayoutManager
 
         val messageListObserver = Observer<MutableList<ChatMessage>> {
-            adapterMessages = ConversationRecyclerAdapter(it)
+            adapterMessages = ConversationRecyclerAdapter(it, repo.uid)
             rv_messages.adapter = adapterMessages
             Toast.makeText(activity, "Observer triggered", Toast.LENGTH_LONG).show()
             rv_messages.scrollToPosition(it.size -1)
         }
 
         repo.messageList.observe(this, messageListObserver)
-        
+
         sms.setOnClickListener {
             val text = input_text.text.toString()
             repo.sendMessage(text, args.chatId)
