@@ -28,6 +28,8 @@ class AllChatsRemoteRepository {
 
     val uid: String = auth.uid!!
 
+    val newChatId = MutableLiveData<String>()
+
     // CALLED FIRST
     fun loadChatsList() {
 
@@ -67,18 +69,20 @@ class AllChatsRemoteRepository {
         val amount = chatIds.size
         val receivedLatestMessages = mutableMapOf<String, LastMessage>()
         chatIds.forEach { chatId ->
-            db.getReference("chats/$chatId/lastMessage").addListenerForSingleValueEvent(object : ValueEventListener {
+            db.getReference("chats/$chatId/lastMessage").addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
+                    //TODO add another method to setup onetime listener and all-time listener
                     val value = p0.getValue(LastMessage::class.java)
                     value?.let {
                         receivedLatestMessages[chatId] = p0.getValue(LastMessage::class.java) as LastMessage
-                        counter++
-                        if (counter == amount) {
-                            latestMessages.postValue(receivedLatestMessages)
-                        }
+//                        counter++
+//                        if (counter == amount) {
+//                            latestMessages.postValue(receivedLatestMessages)
+//                        }
+                        latestMessages.postValue(receivedLatestMessages)
                     }
                 }
             })
@@ -148,13 +152,15 @@ class AllChatsRemoteRepository {
     }
 
     fun openChat(chatId: String) {
+        //newChatId.value = chatId
         loadChatMessages(chatId)
     }
 
     fun startNewChat(destinationUid: String) {
         for ((chatId, list) in chatMembers) {
             if (list.contains(destinationUid)) {
-                openChat(chatId)
+                //openChat(chatId)
+                newChatId.value = chatId
                 return
             }
         }
@@ -166,6 +172,9 @@ class AllChatsRemoteRepository {
         val chat = Chat(id, LastMessage(), mutableListOf(), mutableListOf(uid, destinationUid))
         db.getReference("chats/${chat.id}").setValue(chat)
         addChatToUser(destinationUid, chat.id)
+        //loadChatMessages(chat.id)
+        newChatId.value = chat.id
+        //TODO add listener onDataChange because in new chat messages wont load
     }
 
     private fun addChatToUser(destinationUid: String, chatId: String) {

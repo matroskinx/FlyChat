@@ -10,7 +10,7 @@ import com.example.vladislav.flychat.Models.User
 
 class AllChatsViewModel : ViewModel() {
 
-    private val remoteRepository = AllChatsRemoteRepository()
+    val remoteRepository = AllChatsRemoteRepository()
     val latestMessages: LiveData<MutableMap<String, LastMessage>> = Transformations.map(remoteRepository.latestMessages) {
         it
     }
