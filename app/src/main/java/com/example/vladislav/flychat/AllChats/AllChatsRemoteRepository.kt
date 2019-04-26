@@ -110,7 +110,7 @@ class AllChatsRemoteRepository {
     }
 
     fun sendMessage(text: String, toChatId: String) {
-        val chat = ChatMessage(text, System.currentTimeMillis(), uid)
+        val chat = ChatMessage(text, System.currentTimeMillis() / 1000, uid)
         val lastMessage = LastMessage(text, chat.timestamp)
         db.getReference("chats/$toChatId/messages").push().setValue(chat)
         db.getReference("chats/$toChatId/lastMessage").setValue(lastMessage)

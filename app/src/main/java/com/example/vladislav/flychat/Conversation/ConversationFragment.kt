@@ -49,6 +49,7 @@ class ConversationFragment : Fragment() {
 
         sms.setOnClickListener {
             val text = input_text.text.toString()
+            input_text.text.clear()
             repo.sendMessage(text, args.chatId)
         }
     }

@@ -59,10 +59,6 @@ class NewChatFragment : Fragment() {
         viewModel.remoteRepository.userList.observe(this, usersObserver)
 
         viewModel.remoteRepository.newChatId.observe(this, newChatCreatedObserver)
-
-//        load_users_btn.setOnClickListener {
-//            repo.getAvailableUsers()
-//        }
     }
 
     override fun onDestroy() {
