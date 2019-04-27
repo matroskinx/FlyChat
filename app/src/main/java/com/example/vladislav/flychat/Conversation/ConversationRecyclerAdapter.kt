@@ -1,13 +1,17 @@
 package com.example.vladislav.flychat.Conversation
 
+import android.media.Image
+import android.provider.ContactsContract
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vladislav.flychat.Models.ChatMessage
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.inflate
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_chat_left.view.*
 import kotlinx.android.synthetic.main.recyclerview_chat_right.view.*
+import kotlinx.android.synthetic.main.recyclerview_image_row.view.*
 import java.lang.IllegalStateException
 
 class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessage>, private val currentUid: String) :
@@ -15,7 +19,7 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        when(viewType) {
+        when (viewType) {
             LEFT_CHAT -> {
                 val inflatedView = parent.inflate(R.layout.recyclerview_chat_right, false)
                 return RightMessageHolder(inflatedView)
@@ -24,12 +28,21 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
                 val inflatedView = parent.inflate(R.layout.recyclerview_chat_left, false)
                 return LeftMessageHolder(inflatedView)
             }
+            IMAGE_CHAT -> {
+                val inflatedView = parent.inflate(R.layout.recyclerview_image_row, false)
+                return ImageHolder(inflatedView)
+            }
             else -> throw IllegalStateException("No such itemView type")
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(messageList[position].userName) {
+
+        messageList[position].pictureUrl?.let {
+            return IMAGE_CHAT
+        }
+
+        return when (messageList[position].userName) {
             currentUid -> LEFT_CHAT
             else -> RIGHT_CHAT
         }
@@ -38,7 +51,7 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
     override fun getItemCount() = messageList.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder.itemViewType) {
+        when (holder.itemViewType) {
             LEFT_CHAT -> {
                 val item = messageList[position]
                 (holder as RightMessageHolder).bindMessage(item)
@@ -46,6 +59,10 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
             RIGHT_CHAT -> {
                 val item = messageList[position]
                 (holder as LeftMessageHolder).bindMessage(item)
+            }
+            IMAGE_CHAT -> {
+                val item = messageList[position]
+                (holder as ImageHolder).bindMessage(item)
             }
         }
     }
@@ -73,8 +90,22 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         }
     }
 
+    class ImageHolder(v: View) : RecyclerView.ViewHolder(v) {
+        private val view: View = v
+        private var message: ChatMessage? = null
+
+        fun bindMessage(chatMessage: ChatMessage) {
+            this.message = chatMessage
+            Picasso.get()
+                .load(message?.pictureUrl)
+                .fit()
+                .into(view.row_image)
+        }
+    }
+
     companion object {
         const val LEFT_CHAT = 0
         const val RIGHT_CHAT = 1
+        const val IMAGE_CHAT = 2
     }
 }

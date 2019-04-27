@@ -1,11 +1,10 @@
 package com.example.vladislav.flychat.AllChats
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.vladislav.flychat.Models.LastMessage
-import com.example.vladislav.flychat.Models.User
+import com.example.vladislav.flychat.Repository.AllChatsRemoteRepository
 
 
 class AllChatsViewModel : ViewModel() {

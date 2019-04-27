@@ -3,7 +3,6 @@ package com.example.vladislav.flychat.AllChats
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -12,6 +11,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vladislav.flychat.Models.LastMessage
 import com.example.vladislav.flychat.R
+import com.example.vladislav.flychat.Repository.AllChatsRemoteRepository
 import kotlinx.android.synthetic.main.fragment_all_chats.*
 
 

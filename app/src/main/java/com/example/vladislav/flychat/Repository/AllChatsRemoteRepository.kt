@@ -1,7 +1,6 @@
-package com.example.vladislav.flychat.AllChats
+package com.example.vladislav.flychat.Repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.vladislav.flychat.Models.Chat
 import com.example.vladislav.flychat.Models.ChatMessage
