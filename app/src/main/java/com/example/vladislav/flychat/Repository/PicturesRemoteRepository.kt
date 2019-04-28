@@ -14,7 +14,11 @@ class PicturesRemoteRepository {
         fun test(file: File)
     }
 
-    fun uploadPicture(photoUri: String, chatId: String) {
+    interface OnUploadResult {
+        fun onUploadSuccess(downloadLink: String)
+    }
+
+    fun uploadPicture(photoUri: String, chatId: String, listener: OnUploadResult) {
         val filename = UUID.randomUUID().toString()
         val ref = storage.getReference("chatPics/$chatId/$filename")
 
@@ -25,7 +29,7 @@ class PicturesRemoteRepository {
         uploadTask.addOnSuccessListener {
             ref.downloadUrl.addOnSuccessListener {
                 Log.d("PicturesRepo", "upload picture link:$it")
-                val downloadLink = it
+                listener.onUploadSuccess(it.toString())
             }
         }
 

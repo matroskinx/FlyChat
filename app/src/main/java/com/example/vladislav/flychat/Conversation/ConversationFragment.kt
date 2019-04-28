@@ -10,8 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.vladislav.flychat.AllChats.AllChatsViewModel
 import com.example.vladislav.flychat.Repository.AllChatsRemoteRepository
 import com.example.vladislav.flychat.Models.ChatMessage
 import com.example.vladislav.flychat.R
@@ -25,11 +27,20 @@ class ConversationFragment : Fragment() {
     private val args: ConversationFragmentArgs by navArgs()
     private lateinit var adapterMessages: ConversationRecyclerAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
-    private val repo = AllChatsRemoteRepository()
+    private lateinit var viewModel: AllChatsViewModel
+
+    private val onUploadSuccessListener = object : PicturesRemoteRepository.OnUploadResult {
+        override fun onUploadSuccess(downloadLink: String) {
+            viewModel.remoteRepository.sendMessage("picture", args.chatId, downloadLink)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        repo.openChat(args.chatId)
+        activity?.let {
+            viewModel = ViewModelProviders.of(it).get(AllChatsViewModel::class.java)
+        }
+        viewModel.remoteRepository.openChat(args.chatId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -43,18 +54,18 @@ class ConversationFragment : Fragment() {
         rv_messages.layoutManager = linearLayoutManager
 
         val messageListObserver = Observer<MutableList<ChatMessage>> {
-            adapterMessages = ConversationRecyclerAdapter(it, repo.uid)
+            adapterMessages = ConversationRecyclerAdapter(it, viewModel.remoteRepository.uid)
             rv_messages.adapter = adapterMessages
             Toast.makeText(activity, "Observer triggered", Toast.LENGTH_LONG).show()
             rv_messages.scrollToPosition(it.size - 1)
         }
 
-        repo.messageList.observe(this, messageListObserver)
+        viewModel.remoteRepository.messageList.observe(this, messageListObserver)
 
         sms.setOnClickListener {
             val text = input_text.text.toString()
             input_text.text.clear()
-            repo.sendMessage(text, args.chatId)
+            viewModel.remoteRepository.sendMessage(text, args.chatId)
         }
 
         attach_btn.setOnClickListener {
@@ -66,7 +77,7 @@ class ConversationFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 23 && resultCode == Activity.RESULT_OK && data != null) {
             val uri = data.data
-            PicturesRemoteRepository().uploadPicture(uri.toString(), repo.newChatId.value as String)
+            PicturesRemoteRepository().uploadPicture(uri.toString(), args.chatId, onUploadSuccessListener)
         }
     }
 
