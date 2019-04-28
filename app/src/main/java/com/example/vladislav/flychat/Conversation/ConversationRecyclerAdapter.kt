@@ -1,11 +1,13 @@
 package com.example.vladislav.flychat.Conversation
 
+import android.content.Intent
 import android.media.Image
 import android.provider.ContactsContract
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vladislav.flychat.Models.ChatMessage
+import com.example.vladislav.flychat.PictureActivity
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.inflate
 import com.squareup.picasso.Picasso
@@ -90,9 +92,20 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         }
     }
 
-    class ImageHolder(v: View) : RecyclerView.ViewHolder(v) {
+    class ImageHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         private val view: View = v
         private var message: ChatMessage? = null
+
+        init {
+            v.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            val context = view.context
+            val intent = Intent(context, PictureActivity::class.java)
+            intent.putExtra(URL_KEY, this.message!!.pictureUrl)
+            context.startActivity(intent)
+        }
 
         fun bindMessage(chatMessage: ChatMessage) {
             this.message = chatMessage
@@ -107,5 +120,6 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         const val LEFT_CHAT = 0
         const val RIGHT_CHAT = 1
         const val IMAGE_CHAT = 2
+        const val URL_KEY = "pic_url"
     }
 }
