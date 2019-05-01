@@ -2,13 +2,10 @@ package com.example.vladislav.flychat.Register
 
 import android.net.Uri
 import android.util.Log
-import com.example.vladislav.flychat.Models.Chat
-import com.example.vladislav.flychat.Models.LastMessage
 import com.example.vladislav.flychat.Models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import java.util.*
 
 class RegisterInteractor {
 
@@ -28,7 +25,7 @@ class RegisterInteractor {
         photoFileUri: Uri?,
         listener: OnRegisterFinishListener
     ) {
-        //TODO username for registration
+        //TODO name for registration
         if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
             listener.onRegisterError("Fields should not be empty")
             return
@@ -59,7 +56,7 @@ class RegisterInteractor {
         val reference = db.getReference("users/$uid")
         //val chatsref = db.getReference("chats/smth")
         uid?.let {
-            val user = User(uid, email = email, username = username, profileImageURL = photoFileUri.toString())
+            val user = User(uid, email = email, name = username, profileImageUrl = photoFileUri.toString())
             reference.setValue(user)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {

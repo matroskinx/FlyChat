@@ -3,9 +3,11 @@ package com.example.vladislav.flychat.Repository
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
 import java.io.File
 import java.util.*
+import android.graphics.BitmapFactory
+
+
 
 class PicturesRemoteRepository {
     private val storage = FirebaseStorage.getInstance()
@@ -15,12 +17,12 @@ class PicturesRemoteRepository {
     }
 
     interface OnUploadResult {
-        fun onUploadSuccess(downloadLink: String)
+        fun onUploadSuccess(downloadLink: String, width: Int, height: Int)
     }
 
-    fun uploadPicture(photoUri: String, chatId: String, listener: OnUploadResult) {
+    fun uploadPicture(photoUri: String, width: Int, height: Int, chatId: String, listener: OnUploadResult) {
         val filename = UUID.randomUUID().toString()
-        val ref = storage.getReference("chatPics/$chatId/$filename")
+        val ref = storage.getReference("messageImages/$chatId/$filename")
 
         val uri = Uri.parse(photoUri)
 
@@ -29,7 +31,7 @@ class PicturesRemoteRepository {
         uploadTask.addOnSuccessListener {
             ref.downloadUrl.addOnSuccessListener {
                 Log.d("PicturesRepo", "upload picture link:$it")
-                listener.onUploadSuccess(it.toString())
+                listener.onUploadSuccess(it.toString(), width, height)
             }
         }
 

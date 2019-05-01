@@ -106,7 +106,7 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
 
     private fun uploadPicToFirebase() {
         val filename = UUID.randomUUID().toString()
-        val fileRef = storageRef.child("avatars/$filename")
+        val fileRef = storageRef.child("profileImages/$filename")
 
         photoFileUri?.let {
             val uploadTask = fileRef.putFile(it)

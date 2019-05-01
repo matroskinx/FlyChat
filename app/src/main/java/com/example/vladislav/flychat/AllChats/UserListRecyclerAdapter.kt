@@ -1,10 +1,8 @@
 package com.example.vladislav.flychat.AllChats
 
-import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vladislav.flychat.Models.User
 import com.example.vladislav.flychat.R
@@ -50,7 +48,7 @@ class UserListRecyclerAdapter(private val users: MutableList<User>, private val 
         fun bindUser(user: User) {
             this.user = user
             view.user_row_email.text = user.email
-            view.user_row_name.text = user.username
+            view.user_row_name.text = user.name
         }
 
         companion object {

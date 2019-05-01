@@ -20,6 +20,9 @@ import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.Register.RegisterActivity
 import com.example.vladislav.flychat.Repository.PicturesRemoteRepository
 import kotlinx.android.synthetic.main.fragment_conversation.*
+import android.graphics.BitmapFactory
+
+
 
 
 class ConversationFragment : Fragment() {
@@ -30,8 +33,9 @@ class ConversationFragment : Fragment() {
     private lateinit var viewModel: AllChatsViewModel
 
     private val onUploadSuccessListener = object : PicturesRemoteRepository.OnUploadResult {
-        override fun onUploadSuccess(downloadLink: String) {
-            viewModel.remoteRepository.sendMessage("picture", args.chatId, downloadLink)
+        override fun onUploadSuccess(downloadLink: String, width: Int, height: Int) {
+            //viewModel.remoteRepository.sendMessage("picture", args.chatId, downloadLink)
+            viewModel.remoteRepository.sendPicture("picture", args.chatId, downloadLink, width, height )
         }
     }
 
@@ -77,7 +81,15 @@ class ConversationFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 23 && resultCode == Activity.RESULT_OK && data != null) {
             val uri = data.data
-            PicturesRemoteRepository().uploadPicture(uri.toString(), args.chatId, onUploadSuccessListener)
+
+            val o = BitmapFactory.Options()
+            o.inJustDecodeBounds = true
+            BitmapFactory.decodeStream( context?.contentResolver?.openInputStream(uri), null, o)
+
+            val pictureWidth = o.outWidth
+            val pictureHeight = o.outHeight
+
+            PicturesRemoteRepository().uploadPicture(uri.toString(), pictureWidth, pictureHeight, args.chatId, onUploadSuccessListener)
         }
     }
 

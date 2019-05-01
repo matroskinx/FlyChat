@@ -51,7 +51,7 @@ class LatestMessagesRecyclerAdapter(private val messages: MutableMap<String, Las
             view.sender_name_text.text = message.text
             view.sender_image.setImageResource(R.drawable.abc_ic_star_black_48dp)
 
-            val dateTimestamp = message.time * 1000   // timestamp back to millis
+            val dateTimestamp = message.time * 1000   // time back to millis
             val currentDate = System.currentTimeMillis()
             val date = Date(dateTimestamp)
             val dateDiff = currentDate - dateTimestamp

@@ -1,8 +1,6 @@
 package com.example.vladislav.flychat.Conversation
 
 import android.content.Intent
-import android.media.Image
-import android.provider.ContactsContract
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -44,7 +42,7 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
             return IMAGE_CHAT
         }
 
-        return when (messageList[position].userName) {
+        return when (messageList[position].fromId) {
             currentUid -> LEFT_CHAT
             else -> RIGHT_CHAT
         }
@@ -77,7 +75,7 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         fun bindMessage(chatMessage: ChatMessage) {
             this.message = chatMessage
             view.mes_right.text = chatMessage.text
-            view.mes_right_username.text = chatMessage.userName
+            view.mes_right_username.text = chatMessage.fromId
         }
     }
 
@@ -88,7 +86,7 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         fun bindMessage(chatMessage: ChatMessage) {
             this.message = chatMessage
             view.mes_left.text = chatMessage.text
-            view.mes_left_username.text = chatMessage.userName
+            view.mes_left_username.text = chatMessage.fromId
         }
     }
 
