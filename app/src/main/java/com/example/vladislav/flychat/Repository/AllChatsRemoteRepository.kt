@@ -155,6 +155,14 @@ class AllChatsRemoteRepository {
         loadChatMessages(chatId)
     }
 
+    fun getAvatarUrlByChatId(chatId: String): String {
+        val userIds = chatMembers[chatId]
+        val userId = userIds?.single { u -> u != uid } as String
+        val photoUrl = userList.value!![userId]?.profileImageURL
+        //TODO pass url to default picture
+        return photoUrl as String
+    }
+
     fun startNewChat(destinationUid: String) {
         for ((chatId, list) in chatMembers) {
             if (list.contains(destinationUid)) {
