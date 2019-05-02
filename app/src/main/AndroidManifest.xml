@@ -13,6 +13,9 @@
             android:theme="@style/AppTheme">
         <activity android:name=".PictureActivity"
                   android:theme="@style/PictureTheme">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".AllChats.AllChatsActivity" />
         </activity>
         <activity
                 android:name=".AllChats.AllChatsActivity"

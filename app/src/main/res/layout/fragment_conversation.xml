@@ -11,9 +11,9 @@
             android:layout_height="wrap_content" android:id="@+id/attach_btn"
             app:layout_constraintBottom_toBottomOf="@+id/input_text"
             app:layout_constraintTop_toTopOf="@+id/input_text" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp" android:background="@android:color/transparent"/>
     <Button
-            android:text="Send Test"
+            android:text="Send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/sms"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,5 +35,5 @@
             android:id="@+id/input_text"
             app:layout_constraintEnd_toStartOf="@+id/sms" android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/sms" app:layout_constraintTop_toTopOf="@+id/sms"
-            app:layout_constraintStart_toEndOf="@+id/attach_btn"/>
+            app:layout_constraintStart_toEndOf="@+id/attach_btn" android:layout_marginStart="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

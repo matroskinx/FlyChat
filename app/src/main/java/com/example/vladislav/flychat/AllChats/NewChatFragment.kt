@@ -2,6 +2,7 @@ package com.example.vladislav.flychat.AllChats
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -52,6 +53,7 @@ class NewChatFragment : Fragment() {
 
         val newChatCreatedObserver = Observer<String> { chatId ->
             findNavController().navigate(NewChatFragmentDirections.actionNewChatFragmentToConversationFragment(chatId))
+            Log.d("NENWNWWW", "obs triggered (newchat)")
         }
 
         viewModel.remoteRepository.userList.observe(this, usersObserver)
@@ -61,6 +63,6 @@ class NewChatFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.remoteRepository.newChatId.removeObservers(this)
+        //viewModel.remoteRepository.newChatId.removeObservers(this)
     }
 }

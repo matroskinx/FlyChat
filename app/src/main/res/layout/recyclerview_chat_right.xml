@@ -10,6 +10,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/mes_right_username"
             app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/rounded_text"
+            android:padding="12dp"
             android:layout_marginEnd="8dp" android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"/>
     <TextView
             android:text="CHAT_RIGHT"

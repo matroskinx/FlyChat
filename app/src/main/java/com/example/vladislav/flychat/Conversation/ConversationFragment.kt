@@ -69,7 +69,9 @@ class ConversationFragment : Fragment() {
         sms.setOnClickListener {
             val text = input_text.text.toString()
             input_text.text.clear()
-            viewModel.remoteRepository.sendMessage(text, args.chatId)
+            if(text.isNotEmpty()) {
+                viewModel.remoteRepository.sendMessage(text, args.chatId)
+            }
         }
 
         attach_btn.setOnClickListener {
