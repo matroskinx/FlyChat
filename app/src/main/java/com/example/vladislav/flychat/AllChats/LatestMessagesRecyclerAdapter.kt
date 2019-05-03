@@ -18,8 +18,7 @@ import java.util.*
 
 class LatestMessagesRecyclerAdapter(
     private val messages: MutableMap<String, LastMessage>,
-    //private val userList: MutableMap<String, User>,
-    private val pictureUrls: MutableMap<String, String> = mutableMapOf()
+    private val nameImageList: MutableMap<String, Pair<String, String>> = mutableMapOf()
 ) :
     RecyclerView.Adapter<LatestMessagesRecyclerAdapter.MessageHolder>() {
 
@@ -33,9 +32,8 @@ class LatestMessagesRecyclerAdapter(
     override fun onBindViewHolder(holder: MessageHolder, position: Int) {
         val itemMessage = messages.values.elementAt(position)
         val chatId = messages.keys.elementAt(position)
-        val pictureUrl: String? = pictureUrls[chatId]
-
-        holder.bindMessage(itemMessage, pictureUrl)
+        val nameImagePair: Pair<String, String>? = nameImageList[chatId]
+        holder.bindMessage(itemMessage, nameImagePair)
     }
 
     class MessageHolder(v: View, private val messages: MutableMap<String, LastMessage>) : RecyclerView.ViewHolder(v),
@@ -53,17 +51,22 @@ class LatestMessagesRecyclerAdapter(
             Log.d("MESSAGESRV", "Click!")
         }
 
-        fun bindMessage(message: LastMessage, pictureUrl: String?) {
+        fun bindMessage(message: LastMessage, nameImagePair: Pair<String, String>?) {
             this.message = message
             //TODO fix display messages
             view.sender_message_text.text = message.text
             view.sender_name_text.text = message.text
-            //view.sender_image.setImageResource(R.drawable.abc_ic_star_black_48dp)
 
+            nameImagePair?.let {
+                view.sender_name_text.text = it.first
 
-            pictureUrl?.let {
-                Picasso.get().load(it).into(view.sender_image)
-            } ?: view.sender_image.setImageResource(R.drawable.abc_ic_star_black_48dp)
+                if(it.second.isNotEmpty()) {
+                    Picasso.get().load(it.second).into(view.sender_image)
+                }
+                else {
+                    view.sender_image.setImageResource(R.drawable.abc_ic_star_black_48dp)
+                }
+            }
 
 
             val dateTimestamp = message.time * 1000   // time back to millis

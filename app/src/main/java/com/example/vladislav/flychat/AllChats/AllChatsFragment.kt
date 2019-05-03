@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vladislav.flychat.Models.LastMessage
+import com.example.vladislav.flychat.Models.User
 import com.example.vladislav.flychat.R
 import com.example.vladislav.flychat.Repository.AllChatsRemoteRepository
 import kotlinx.android.synthetic.main.fragment_all_chats.*
@@ -51,14 +52,16 @@ class AllChatsFragment : Fragment() {
 
         viewModel.latestMessages.observe(this, latestMessagesObserver)
 
-        val chatPicturesObserver = Observer<MutableMap<String, String>> { pictureUrls ->
+        val userListObserver = Observer<MutableMap<String, User>> { fullUserList->
+            val nameImagePairList = viewModel.remoteRepository.getUserNamesAndAvatars(fullUserList)
             val latestMessages = viewModel.remoteRepository.latestMessages.value
-            latestMessages?.let { messages ->
-                adapterLatestMessages = LatestMessagesRecyclerAdapter(messages, pictureUrls)
+            latestMessages?.let {
+                adapterLatestMessages = LatestMessagesRecyclerAdapter(latestMessages, nameImageList = nameImagePairList)
+                chrv.adapter = adapterLatestMessages
             }
         }
 
-        viewModel.remoteRepository.latestPictures.observe(this, chatPicturesObserver)
+        viewModel.remoteRepository.userList.observe(this, userListObserver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

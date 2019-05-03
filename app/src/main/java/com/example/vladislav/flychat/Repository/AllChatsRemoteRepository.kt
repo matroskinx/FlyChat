@@ -16,17 +16,16 @@ class AllChatsRemoteRepository {
     private val db: FirebaseDatabase = FirebaseDatabase.getInstance()
 
     val latestMessages = MutableLiveData<MutableMap<String, LastMessage>>()
-    val userList = MutableLiveData<MutableMap<String, User>>()
+    val userList = MutableLiveData<MutableMap<String, User>>()              // key = uid, value = user
 
-    val latestPictures = MutableLiveData<MutableMap<String, String>>()
-
-    private val chatMembers = mutableMapOf<String, MutableList<String>>()        // key = chatId, value = listOf(user_id)
+    private val chatMembers = mutableMapOf<String, MutableList<String>>()   // key = chatId, value = listOf(user_id)
     val messageList = MutableLiveData<MutableList<ChatMessage>>()
     private lateinit var currentUser: User
 
     val uid: String = auth.uid!!
 
     val newChatId = MutableLiveData<String>()
+
 
     // CALLED FIRST
     fun loadChatsList() {
@@ -42,6 +41,7 @@ class AllChatsRemoteRepository {
                     currentUser = usr
                     getLatestMessages(usr.chats)
                     getChatMembers(usr.chats)
+                    getAvailableUsers()
                 }
             }
         }
@@ -65,8 +65,6 @@ class AllChatsRemoteRepository {
 
 
     private fun getLatestMessages(chatIds: MutableList<String>) {
-        var counter = 0
-        val amount = chatIds.size
         val receivedLatestMessages = mutableMapOf<String, LastMessage>()
         chatIds.forEach { chatId ->
             db.getReference("chats/$chatId/lastMessage").addValueEventListener(object : ValueEventListener {
@@ -74,14 +72,9 @@ class AllChatsRemoteRepository {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
-                    //TODO add another method to setup onetime listener and all-time listener
                     val value = p0.getValue(LastMessage::class.java)
                     value?.let {
                         receivedLatestMessages[chatId] = p0.getValue(LastMessage::class.java) as LastMessage
-//                        counter++
-//                        if (counter == amount) {
-//                            latestMessages.postValue(receivedLatestMessages)
-//                        }
                         latestMessages.postValue(receivedLatestMessages)
                     }
                 }
@@ -107,7 +100,6 @@ class AllChatsRemoteRepository {
                         Log.d(TAG, "received ${usr.email}")
                     }
 
-                    //receivedUserList[usr.uid] = usr
                 }
                 userList.postValue(receivedUserList)
             }
@@ -139,14 +131,6 @@ class AllChatsRemoteRepository {
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
-/*                    val b = p0.value as HashMap<String, String>
-
-                    val k = b.keys.toMutableList()
-
-                    p0.value?.let {
-                        chatMembers[chatId] = it as MutableList<String><String>
-                    }*/
-
                     p0.value?.let {
                         val rawData = it as HashMap<String, String>
                         val convertedData = rawData.keys.toMutableList()
@@ -173,34 +157,22 @@ class AllChatsRemoteRepository {
     }
 
     fun openChat(chatId: String) {
-        //newChatId.value = chatId
         loadChatMessages(chatId)
     }
 
-    fun getCurrentChatAvatars() {
-        val a = mutableMapOf<String, String>()
-        for((chatId, item) in chatMembers) {
-            val userId = item.single { u -> u != uid }
-            val photoUrl = userList.value!![userId]?.profileImageUrl
-            a[chatId] = photoUrl!!
+    fun getUserNamesAndAvatars(fullUserList: MutableMap<String, User>): MutableMap<String, Pair<String, String>> {
+        val list = mutableMapOf<String, Pair<String, String>>()  //key = chatId, value = pair(username, profileImageUrl)
+
+        for ((chatId, uidList) in chatMembers) {
+            val userId = uidList.single { u -> u != uid }
+            val photoUrl = fullUserList[userId]?.profileImageUrl ?: ""
+            val userName = fullUserList[userId]?.name ?: "Anonymous"
+            list[chatId] = Pair(userName, photoUrl)
         }
-        latestPictures.postValue(a)
+
+        return list
     }
 
-//    fun getAvatarUrlByChatId(chatId: String): String {
-//        val userIds = chatMembers[chatId]
-//        val userId = userIds?.single { u -> u != uid } as String
-//        val photoUrl = userList.value!![userId]?.profileImageUrl
-//
-//
-//
-//        latestPictures[chatId] = photoUrl ?: ""
-//
-//
-//
-//        //TODO pass url to default picture
-//        return photoUrl as String
-//    }
 
     fun startNewChat(destinationUid: String) {
         for ((chatId, list) in chatMembers) {
@@ -227,7 +199,6 @@ class AllChatsRemoteRepository {
         }
         addChatToUser(destinationUid, chat.id)
 
-        //loadChatMessages(chat.id)
 
         newChatId.value = chat.id
 
