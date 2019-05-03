@@ -1,7 +1,8 @@
-package com.example.vladislav.flychat
+package com.example.vladislav.flychat.PicturePreview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.vladislav.flychat.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_picture.*
 

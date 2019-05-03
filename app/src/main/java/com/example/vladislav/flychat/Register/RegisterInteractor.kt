@@ -11,7 +11,6 @@ class RegisterInteractor {
 
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
-    private val storage = FirebaseStorage.getInstance().reference
 
     interface OnRegisterFinishListener {
         fun onRegisterError(exceptionMessage: String)
@@ -25,7 +24,6 @@ class RegisterInteractor {
         photoFileUri: Uri?,
         listener: OnRegisterFinishListener
     ) {
-        //TODO name for registration
         if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
             listener.onRegisterError("Fields should not be empty")
             return
@@ -54,7 +52,6 @@ class RegisterInteractor {
     ) {
         val uid = auth.uid
         val reference = db.getReference("users/$uid")
-        //val chatsref = db.getReference("chats/smth")
         uid?.let {
             val user = User(uid, email = email, name = username, profileImageUrl = photoFileUri.toString())
             reference.setValue(user)
@@ -66,33 +63,10 @@ class RegisterInteractor {
                         listener.onRegisterError(task.exception?.localizedMessage ?: "")
                         Log.d(TAG, "Failed to save user $uid because of: ${task.exception?.localizedMessage}")
                     }
-                }.continueWith {
-                    /*
-                    val chat = Chat("smth", LastMessage("123", 34214, "Vladislav"), mutableListOf(), mutableListOf())
-                    chatsref.setValue(chat)
-                    */
                 }
             return
         }
     }
-
-
-/*    private fun uploadPicToFirebase(photoFileUri: Uri) {
-        val filename = UUID.randomUUID().toString()
-        val fileRef = storage.child("avatars/$filename")
-
-        val uploadTask = fileRef.putFile(photoFileUri)
-
-        uploadTask.addOnSuccessListener {
-            Log.d(TAG, "picture successfully uploaded")
-            fileRef.downloadUrl.addOnSuccessListener { uri ->
-                Log.d(TAG, "upload link: $uri")
-            }
-        }
-        uploadTask.addOnFailureListener { exception ->
-            Log.d(TAG, "picture not loaded, reason: ${exception.localizedMessage}")
-        }
-    }*/
 
     companion object {
         const val TAG = "RegisterInteractor"

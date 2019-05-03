@@ -1,8 +1,8 @@
 package com.example.vladislav.flychat.Login
 
-import com.example.vladislav.flychat.BasePresenter
-import com.example.vladislav.flychat.BaseView
-import com.example.vladislav.flychat.LoadingView
+import com.example.vladislav.flychat.Base.BasePresenter
+import com.example.vladislav.flychat.Base.BaseView
+import com.example.vladislav.flychat.Utilities.LoadingView
 
 interface LoginContract {
     interface Presenter : BasePresenter {

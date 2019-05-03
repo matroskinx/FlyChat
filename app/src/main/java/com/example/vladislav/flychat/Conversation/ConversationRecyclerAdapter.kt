@@ -4,11 +4,11 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vladislav.flychat.DateUtility
+import com.example.vladislav.flychat.Utilities.DateUtility
 import com.example.vladislav.flychat.Models.ChatMessage
-import com.example.vladislav.flychat.PictureActivity
+import com.example.vladislav.flychat.PicturePreview.PictureActivity
 import com.example.vladislav.flychat.R
-import com.example.vladislav.flychat.inflate
+import com.example.vladislav.flychat.Utilities.inflate
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_chat_left.view.*
 import kotlinx.android.synthetic.main.recyclerview_chat_right.view.*
@@ -91,7 +91,6 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         fun bindMessage(chatMessage: ChatMessage) {
             this.message = chatMessage
             view.mes_right.text = DateUtility.getDate(chatMessage.time)
-            //view.mes_right_username.text = chatMessage.text
             view.mes_right_username.text = chatMessage.text
         }
     }
@@ -103,7 +102,6 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         fun bindMessage(chatMessage: ChatMessage) {
             this.message = chatMessage
             view.mes_left.text = DateUtility.getDate(chatMessage.time)
-            //view.mes_left_username.text = chatMessage.fromId
             view.mes_left_username.text = chatMessage.text
         }
     }

@@ -23,8 +23,6 @@ class AllChatsFragment : Fragment() {
     private lateinit var adapterLatestMessages: LatestMessagesRecyclerAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
-    private fun timestampSelector(message: LastMessage): Long = message.time
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
@@ -52,7 +50,7 @@ class AllChatsFragment : Fragment() {
 
         viewModel.latestMessages.observe(this, latestMessagesObserver)
 
-        val userListObserver = Observer<MutableMap<String, User>> { fullUserList->
+        val userListObserver = Observer<MutableMap<String, User>> { fullUserList ->
             val nameImagePairList = viewModel.remoteRepository.getUserNamesAndAvatars(fullUserList)
             val latestMessages = viewModel.remoteRepository.latestMessages.value
             latestMessages?.let {

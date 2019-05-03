@@ -1,4 +1,4 @@
-package com.example.vladislav.flychat
+package com.example.vladislav.flychat.Utilities
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -20,8 +20,6 @@ object DateUtility {
                 sdf.format(date)
             }
             else -> {
-//                val dateFormat = android.text.format.DateFormat.getDateFormat(itemView.context)
-//                dateFormat.format(date)
                 val sdf = SimpleDateFormat("yyyy", Locale.getDefault())
                 sdf.format(date)
             }

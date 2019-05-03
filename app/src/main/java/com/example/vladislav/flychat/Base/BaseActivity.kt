@@ -1,4 +1,4 @@
-package com.example.vladislav.flychat
+package com.example.vladislav.flychat.Base
 
 import android.os.Bundle
 import android.os.PersistableBundle

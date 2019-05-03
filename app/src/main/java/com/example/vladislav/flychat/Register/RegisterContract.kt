@@ -1,9 +1,9 @@
 package com.example.vladislav.flychat.Register
 
 import android.net.Uri
-import com.example.vladislav.flychat.BasePresenter
-import com.example.vladislav.flychat.BaseView
-import com.example.vladislav.flychat.LoadingView
+import com.example.vladislav.flychat.Base.BasePresenter
+import com.example.vladislav.flychat.Base.BaseView
+import com.example.vladislav.flychat.Utilities.LoadingView
 
 interface RegisterContract {
     interface Presenter : BasePresenter {

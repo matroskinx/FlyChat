@@ -1,15 +1,13 @@
 package com.example.vladislav.flychat.AllChats
 
-import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vladislav.flychat.Models.LastMessage
-import com.example.vladislav.flychat.Models.User
 import com.example.vladislav.flychat.R
-import com.example.vladislav.flychat.inflate
+import com.example.vladislav.flychat.Utilities.inflate
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_chat_row.view.*
 import java.text.SimpleDateFormat
@@ -53,21 +51,18 @@ class LatestMessagesRecyclerAdapter(
 
         fun bindMessage(message: LastMessage, nameImagePair: Pair<String, String>?) {
             this.message = message
-            //TODO fix display messages
             view.sender_message_text.text = message.text
             view.sender_name_text.text = message.text
 
             nameImagePair?.let {
                 view.sender_name_text.text = it.first
 
-                if(it.second.isNotEmpty()) {
+                if (it.second.isNotEmpty()) {
                     Picasso.get().load(it.second).into(view.sender_image)
-                }
-                else {
+                } else {
                     view.sender_image.setImageResource(R.drawable.abc_ic_star_black_48dp)
                 }
             }
-
 
             val dateTimestamp = message.time * 1000   // time back to millis
             val currentDate = System.currentTimeMillis()

@@ -1,12 +1,11 @@
 package com.example.vladislav.flychat.AllChats
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vladislav.flychat.Models.User
 import com.example.vladislav.flychat.R
-import com.example.vladislav.flychat.inflate
+import com.example.vladislav.flychat.Utilities.inflate
 import kotlinx.android.synthetic.main.recyclerview_user_row.view.*
 
 class UserListRecyclerAdapter(private val users: MutableList<User>, private val userClickListener: UserClickListener) :
@@ -36,10 +35,7 @@ class UserListRecyclerAdapter(private val users: MutableList<User>, private val 
         }
 
         override fun onClick(v: View?) {
-            //TODO pass chatId not userId
             listener.userClicked(user!!.uid)
-            //findNavController(view).navigate(NewChatFragmentDirections.actionNewChatFragmentToConversationFragment(user!!.uid))
-            Log.d("USERLISTRV", "User ${user!!.uid} opened")
         }
 
         private var view: View = v
@@ -49,10 +45,6 @@ class UserListRecyclerAdapter(private val users: MutableList<User>, private val 
             this.user = user
             view.user_row_email.text = user.email
             view.user_row_name.text = user.name
-        }
-
-        companion object {
-            private const val UID_KEY = "KEY92"
         }
     }
 }

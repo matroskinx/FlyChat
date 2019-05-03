@@ -14,15 +14,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vladislav.flychat.AllChats.AllChatsViewModel
-import com.example.vladislav.flychat.Repository.AllChatsRemoteRepository
 import com.example.vladislav.flychat.Models.ChatMessage
 import com.example.vladislav.flychat.R
-import com.example.vladislav.flychat.Register.RegisterActivity
 import com.example.vladislav.flychat.Repository.PicturesRemoteRepository
 import kotlinx.android.synthetic.main.fragment_conversation.*
 import android.graphics.BitmapFactory
-
-
 
 
 class ConversationFragment : Fragment() {
@@ -34,8 +30,7 @@ class ConversationFragment : Fragment() {
 
     private val onUploadSuccessListener = object : PicturesRemoteRepository.OnUploadResult {
         override fun onUploadSuccess(downloadLink: String, width: Int, height: Int) {
-            //viewModel.remoteRepository.sendMessage("picture", args.chatId, downloadLink)
-            viewModel.remoteRepository.sendPicture("", args.chatId, downloadLink, width, height )
+            viewModel.remoteRepository.sendPicture("", args.chatId, downloadLink, width, height)
         }
     }
 
@@ -69,7 +64,7 @@ class ConversationFragment : Fragment() {
         sms.setOnClickListener {
             val text = input_text.text.toString()
             input_text.text.clear()
-            if(text.isNotEmpty()) {
+            if (text.isNotEmpty()) {
                 viewModel.remoteRepository.sendMessage(text, args.chatId)
             }
         }
@@ -86,12 +81,18 @@ class ConversationFragment : Fragment() {
 
             val o = BitmapFactory.Options()
             o.inJustDecodeBounds = true
-            BitmapFactory.decodeStream( context?.contentResolver?.openInputStream(uri), null, o)
+            BitmapFactory.decodeStream(context?.contentResolver?.openInputStream(uri), null, o)
 
             val pictureWidth = o.outWidth
             val pictureHeight = o.outHeight
 
-            PicturesRemoteRepository().uploadPicture(uri.toString(), pictureWidth, pictureHeight, args.chatId, onUploadSuccessListener)
+            PicturesRemoteRepository().uploadPicture(
+                uri.toString(),
+                pictureWidth,
+                pictureHeight,
+                args.chatId,
+                onUploadSuccessListener
+            )
         }
     }
 

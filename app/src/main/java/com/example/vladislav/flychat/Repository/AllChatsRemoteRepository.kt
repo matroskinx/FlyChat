@@ -50,7 +50,6 @@ class AllChatsRemoteRepository {
     }
 
     private fun convertRawDataToUser(rawUid: String, rawData: HashMap<String, String>): User {
-        //val rawUid = rawData["uid"] as String
         val rawImage = rawData["profileImageUrl"] ?: ""
         val rawEmail = rawData["email"] as String
         val rawUsername = rawData["name"] as String
@@ -62,7 +61,6 @@ class AllChatsRemoteRepository {
             return User(rawUid, chatIds, rawEmail, rawUsername, rawImage)
         }
     }
-
 
     private fun getLatestMessages(chatIds: MutableList<String>) {
         val receivedLatestMessages = mutableMapOf<String, LastMessage>()
@@ -173,7 +171,6 @@ class AllChatsRemoteRepository {
         return list
     }
 
-
     fun startNewChat(destinationUid: String) {
         for ((chatId, list) in chatMembers) {
             if (list.contains(destinationUid)) {
@@ -188,22 +185,15 @@ class AllChatsRemoteRepository {
     private fun createNewChat(destinationUid: String) {
         val id = UUID.randomUUID().toString()
         val chat = Chat(id, LastMessage(), mutableListOf(), mutableListOf())
-
         val pairOne = hashMapOf("userId" to uid)
         val pairTwo = hashMapOf("userId" to destinationUid)
-
 
         db.getReference("chats/${chat.id}").setValue(chat).addOnCompleteListener {
             db.getReference("chats/${chat.id}/users/$uid").setValue(pairOne)
             db.getReference("chats/${chat.id}/users/$destinationUid").setValue(pairTwo)
         }
         addChatToUser(destinationUid, chat.id)
-
-
         newChatId.value = chat.id
-
-
-        //TODO add listener onDataChange because in new chat messages wont load
     }
 
     private fun addChatToUser(destinationUid: String, chatId: String) {

@@ -1,4 +1,4 @@
-package com.example.vladislav.flychat
+package com.example.vladislav.flychat.Utilities
 
 import android.view.LayoutInflater
 import android.view.View

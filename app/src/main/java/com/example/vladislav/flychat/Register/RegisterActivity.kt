@@ -95,7 +95,6 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
     }
 
     private fun createImageFile(): File {
-        //TODO add write_external_storage permission request
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
@@ -157,7 +156,6 @@ class RegisterActivity : AppCompatActivity(), RegisterContract.View {
                 .setItems(arrayOf("Gallery", "Camera")) { _, which ->
                     when (which) {
                         0 -> dispatchPickPictureIntent()
-                        //TODO pick from gallery and take picture
                         1 -> dispatchTakePictureIntent()
                     }
                 }
