@@ -35,7 +35,7 @@ class ConversationFragment : Fragment() {
     private val onUploadSuccessListener = object : PicturesRemoteRepository.OnUploadResult {
         override fun onUploadSuccess(downloadLink: String, width: Int, height: Int) {
             //viewModel.remoteRepository.sendMessage("picture", args.chatId, downloadLink)
-            viewModel.remoteRepository.sendPicture("picture", args.chatId, downloadLink, width, height )
+            viewModel.remoteRepository.sendPicture("", args.chatId, downloadLink, width, height )
         }
     }
 

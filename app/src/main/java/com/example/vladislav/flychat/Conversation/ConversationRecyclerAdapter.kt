@@ -45,13 +45,13 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
     override fun getItemViewType(position: Int): Int {
         return when (messageList[position].fromId) {
             currentUid -> {
-                messageList[position].pictureUrl?.let {
+                messageList[position].imageUrl?.let {
                     return IMAGE_CHAT
                 }
                 RIGHT_CHAT
             }
             else -> {
-                messageList[position].pictureUrl?.let {
+                messageList[position].imageUrl?.let {
                     return IMAGE_CHAT_LEFT
                 }
                 LEFT_CHAT
@@ -119,14 +119,14 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         override fun onClick(v: View?) {
             val context = view.context
             val intent = Intent(context, PictureActivity::class.java)
-            intent.putExtra(URL_KEY, this.message!!.pictureUrl)
+            intent.putExtra(URL_KEY, this.message!!.imageUrl)
             context.startActivity(intent)
         }
 
         fun bindMessage(chatMessage: ChatMessage) {
             this.message = chatMessage
             Picasso.get()
-                .load(message?.pictureUrl)
+                .load(message?.imageUrl)
                 .fit()
                 .into(view.row_image)
 
@@ -145,14 +145,14 @@ class ConversationRecyclerAdapter(private val messageList: MutableList<ChatMessa
         override fun onClick(v: View?) {
             val context = view.context
             val intent = Intent(context, PictureActivity::class.java)
-            intent.putExtra(URL_KEY, this.message!!.pictureUrl)
+            intent.putExtra(URL_KEY, this.message!!.imageUrl)
             context.startActivity(intent)
         }
 
         fun bindMessage(chatMessage: ChatMessage) {
             this.message = chatMessage
             Picasso.get()
-                .load(message?.pictureUrl)
+                .load(message?.imageUrl)
                 .fit()
                 .into(view.row_image_left)
 

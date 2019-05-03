@@ -18,6 +18,8 @@ class AllChatsRemoteRepository {
     val latestMessages = MutableLiveData<MutableMap<String, LastMessage>>()
     val userList = MutableLiveData<MutableMap<String, User>>()
 
+    val latestPictures = MutableLiveData<MutableMap<String, String>>()
+
     private val chatMembers = mutableMapOf<String, MutableList<String>>()        // key = chatId, value = listOf(user_id)
     val messageList = MutableLiveData<MutableList<ChatMessage>>()
     private lateinit var currentUser: User
@@ -35,18 +37,20 @@ class AllChatsRemoteRepository {
 
             override fun onDataChange(p0: DataSnapshot) {
                 val rawData = p0.value as HashMap<String, String>
-                val usr = convertRawDataToUser(rawData)
-                currentUser = usr
-                getLatestMessages(usr.chats)
-                getChatMembers(usr.chats)
+                p0.key?.let {
+                    val usr = convertRawDataToUser(it, rawData)
+                    currentUser = usr
+                    getLatestMessages(usr.chats)
+                    getChatMembers(usr.chats)
+                }
             }
         }
 
         db.getReference("users/$uid").addListenerForSingleValueEvent(listener)
     }
 
-    private fun convertRawDataToUser(rawData: HashMap<String, String>): User {
-        val rawUid = rawData["uid"] as String
+    private fun convertRawDataToUser(rawUid: String, rawData: HashMap<String, String>): User {
+        //val rawUid = rawData["uid"] as String
         val rawImage = rawData["profileImageUrl"] ?: ""
         val rawEmail = rawData["email"] as String
         val rawUsername = rawData["name"] as String
@@ -96,9 +100,14 @@ class AllChatsRemoteRepository {
 
             override fun onDataChange(p0: DataSnapshot) {
                 for (item in p0.children) {
-                    val usr = convertRawDataToUser(item.value as HashMap<String, String>)
-                    receivedUserList[usr.uid] = usr
-                    Log.d(TAG, "received ${usr.email}")
+                    //p0.key
+                    item.key?.let {
+                        val usr = convertRawDataToUser(it, item.value as HashMap<String, String>)
+                        receivedUserList[it] = usr
+                        Log.d(TAG, "received ${usr.email}")
+                    }
+
+                    //receivedUserList[usr.uid] = usr
                 }
                 userList.postValue(receivedUserList)
             }
@@ -113,7 +122,7 @@ class AllChatsRemoteRepository {
     }
 
     fun sendPicture(text: String, toChatId: String, pictureUrl: String, width: Int, height: Int) {
-        val chat = PictureMessage(text, System.currentTimeMillis() / 1000, uid, pictureUrl, width, height)
+        val chat = PictureMessage(System.currentTimeMillis() / 1000, uid, pictureUrl, width, height)
         val lastMessage = LastMessage(text, chat.time)
         db.getReference("chats/$toChatId/messages").push().setValue(chat)
         db.getReference("chats/$toChatId/lastMessage").setValue(lastMessage)
@@ -168,13 +177,30 @@ class AllChatsRemoteRepository {
         loadChatMessages(chatId)
     }
 
-    fun getAvatarUrlByChatId(chatId: String): String {
-        val userIds = chatMembers[chatId]
-        val userId = userIds?.single { u -> u != uid } as String
-        val photoUrl = userList.value!![userId]?.profileImageUrl
-        //TODO pass url to default picture
-        return photoUrl as String
+    fun getCurrentChatAvatars() {
+        val a = mutableMapOf<String, String>()
+        for((chatId, item) in chatMembers) {
+            val userId = item.single { u -> u != uid }
+            val photoUrl = userList.value!![userId]?.profileImageUrl
+            a[chatId] = photoUrl!!
+        }
+        latestPictures.postValue(a)
     }
+
+//    fun getAvatarUrlByChatId(chatId: String): String {
+//        val userIds = chatMembers[chatId]
+//        val userId = userIds?.single { u -> u != uid } as String
+//        val photoUrl = userList.value!![userId]?.profileImageUrl
+//
+//
+//
+//        latestPictures[chatId] = photoUrl ?: ""
+//
+//
+//
+//        //TODO pass url to default picture
+//        return photoUrl as String
+//    }
 
     fun startNewChat(destinationUid: String) {
         for ((chatId, list) in chatMembers) {

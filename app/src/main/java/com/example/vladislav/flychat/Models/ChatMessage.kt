@@ -4,5 +4,5 @@ data class ChatMessage(
     val text: String = "",
     val time: Long = 0,
     val fromId: String = "",
-    val pictureUrl: String? = null
+    val imageUrl: String? = null
 )

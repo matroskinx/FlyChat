@@ -22,6 +22,8 @@ class AllChatsFragment : Fragment() {
     private lateinit var adapterLatestMessages: LatestMessagesRecyclerAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
+    private fun timestampSelector(message: LastMessage): Long = message.time
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
@@ -41,11 +43,22 @@ class AllChatsFragment : Fragment() {
         chrv.setHasFixedSize(true)
 
         val latestMessagesObserver = Observer<MutableMap<String, LastMessage>> {
-            adapterLatestMessages = LatestMessagesRecyclerAdapter(it)
+            val sortedMap = it.toList().sortedByDescending { (_, value) -> value.time }.toMap().toMutableMap()
+
+            adapterLatestMessages = LatestMessagesRecyclerAdapter(sortedMap)
             chrv.adapter = adapterLatestMessages
         }
 
         viewModel.latestMessages.observe(this, latestMessagesObserver)
+
+        val chatPicturesObserver = Observer<MutableMap<String, String>> { pictureUrls ->
+            val latestMessages = viewModel.remoteRepository.latestMessages.value
+            latestMessages?.let { messages ->
+                adapterLatestMessages = LatestMessagesRecyclerAdapter(messages, pictureUrls)
+            }
+        }
+
+        viewModel.remoteRepository.latestPictures.observe(this, chatPicturesObserver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
